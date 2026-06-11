@@ -95,7 +95,36 @@ text "옥상 출입 기록 알려줘" "대현이가 옥상에 왜 올라갔어?"
 
 ## 프로젝트 구조
 
-text rag-detective-game/ ├── app.py ├── requirements.txt ├── README.md │ ├── data/ │   ├── case_docs/ │   ├── suspect_docs/ │   └── background_docs/ │ ├── vectorstore/ │   ├── faiss_index/ │   └── metadata/ │ ├── utils/ │   ├── rag.py │   ├── retriever.py │   ├── game_state.py │   ├── memory.py │   ├── intent_detector.py │   └── prompts.py │ ├── evaluation/ │   ├── evaluate_ragas.py │   ├── ragas_results.csv │   ├── ragas_summary.csv │   └── ragas_scores_bar.png │ └── assets/     └── images/ 
+rag-detective-game/
+├── app.py
+├── requirements.txt
+├── README.md
+│
+├── data/
+│   ├── case_docs/
+│   ├── suspect_docs/
+│   └── background_docs/
+│
+├── vectorstore/
+│   ├── faiss_index/
+│   └── metadata/
+│
+├── utils/
+│   ├── rag.py
+│   ├── retriever.py
+│   ├── game_state.py
+│   ├── memory.py
+│   ├── intent_detector.py
+│   └── prompts.py
+│
+├── evaluation/
+│   ├── evaluate_ragas.py
+│   ├── ragas_results.csv
+│   ├── ragas_summary.csv
+│   └── ragas_scores_bar.png
+│
+└── assets/
+    └── images/
 
 > 실제 프로젝트 파일명과 폴더명에 따라 구조는 달라질 수 있습니다.
 
@@ -103,7 +132,19 @@ text rag-detective-game/ ├── app.py ├── requirements.txt ├── R
 
 ## 시스템 구조
 
-text 사용자 질문 입력         ↓ 질문 의도 분석         ↓ 현재 수사 단계 및 해금 문서 확인         ↓ Vector DB / FAISS 기반 문서 검색         ↓ RAG 답변 생성         ↓ 형사 메모 및 참고 문서 출력         ↓ 단서 획득 및 수사 단계 자동 진행 
+사용자 질문 입력
+        ↓
+질문 의도 분석
+        ↓
+현재 수사 단계 및 해금 문서 확인
+        ↓
+Vector DB / FAISS 기반 문서 검색
+        ↓
+RAG 답변 생성
+        ↓
+형사 메모 및 참고 문서 출력
+        ↓
+단서 획득 및 수사 단계 자동 진행
 
 본 프로젝트는 단순히 전체 문서를 검색하는 방식이 아니라, 현재 수사 단계와 해금된 문서 상태를 함께 확인하여 답변을 생성합니다.  
 이를 통해 후반 단서가 초반에 노출되는 문제를 줄이고, 추리 게임의 흐름을 유지할 수 있도록 설계했습니다.
@@ -154,61 +195,7 @@ bash source venv/bin/activate
 
 bash pip install -r requirements.txt 
 
----
-
-### 4. 환경 변수 설정
-
-프로젝트 루트에 .env 파일을 생성하고 API Key를 입력합니다.
-
-env OPENAI_API_KEY=your_openai_api_key 
-
-Streamlit Cloud 배포 시에는 .env 파일을 업로드하지 않고, Streamlit Secrets 기능을 사용합니다.
-
-예시:
-
-toml OPENAI_API_KEY = "your_openai_api_key" 
-
----
-
-### 5. Streamlit 실행
-
-bash streamlit run app.py 
-
-실행 후 브라우저에서 아래 주소로 접속합니다.
-
-text http://localhost:8501 
-
----
-
-## RAGAS 평가 실행
-
-RAGAS 평가 코드는 evaluation/evaluate_ragas.py에서 실행할 수 있습니다.
-
-bash python evaluation/evaluate_ragas.py 
-
-평가 결과는 다음 파일로 저장됩니다.
-
-text evaluation/ragas_results.csv evaluation/ragas_summary.csv evaluation/ragas_scores_bar.png 
-
----
-
-## RAGAS 평가 결과 요약
-
-본 프로젝트에서는 RAGAS를 이용해 RAG 답변 성능을 평가했습니다.
-
-주요 평가 지표는 다음과 같습니다.
-
-- Context Recall: 정답에 필요한 근거 문서가 검색 결과에 포함되었는지 평가
-- Faithfulness: 답변이 검색된 문서에 충실한지 평가
-- Context Precision: 검색된 문서가 질문과 관련성이 높은지 평가
-- Answer Relevancy: 답변이 사용자 질문에 직접적으로 대응하는지 평가
-
-평가 결과, Context Recall, Faithfulness, Context Precision은 높게 나타났습니다.  
-이는 필요한 근거 문서가 검색 결과에 잘 포함되었고, 답변도 문서 기반으로 생성되었음을 의미합니다.
-
-다만 Answer Relevancy는 상대적으로 낮게 측정되었습니다.  
-이는 추리 게임 특성상 정답을 바로 알려주기보다 스포일러를 방지하고 다음 수사 방향을 안내하는 답변이 포함되었기 때문입니다.
-
+streamlit run app.py
 ---
 
 ## 프로젝트 특징
@@ -255,12 +242,6 @@ text evaluation/ragas_results.csv evaluation/ragas_summary.csv evaluation/ragas_
 - RAGAS 평가 데이터셋 확장
 - 용의자 심문 대화 패턴 다양화
 - 배포 환경 안정화
-
----
-
-예시:
-
-text https://rag-detective-game.streamlit.app 
 
 ---
 
