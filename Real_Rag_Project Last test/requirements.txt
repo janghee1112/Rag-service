@@ -6,5 +6,7 @@ langchain-community
 langchain-openai
 langchain-text-splitters
 faiss-cpu
-rank_bm25
-kiwipiepy
+rank-bm25
+pandas
+numpy
+matplotlib
