@@ -1,0 +1,275 @@
+# 서천대학교 엄대현 옥상 추락 사건 RAG 추리 게임
+
+## 프로젝트 소개
+
+본 프로젝트는 RAG(Retrieval-Augmented Generation) 기술을 활용한 추리 게임형 챗봇 서비스입니다.
+
+사용자는 서천대학교에서 발생한 엄대현 옥상 추락 사건의 수사관이 되어, 사건 자료를 검색하고 용의자를 심문하며 단서를 확보합니다.  
+단순히 질문에 대한 답변을 제공하는 챗봇이 아니라, 사용자가 직접 자료를 분석하고 인물들의 진술을 비교하면서 사건의 진실에 접근하도록 설계했습니다.
+
+본 서비스는 RAG를 통해 사건 문서 기반 답변을 생성하며, 현재 수사 단계에 따라 문서와 단서가 순차적으로 해금되도록 구성했습니다.  
+이를 통해 추리 게임에서 중요한 스포일러 방지, 단계별 수사 진행, 문서 기반 추론 경험을 제공하는 것을 목표로 합니다.
+
+---
+
+## 주요 기능
+
+### 1. RAG 기반 사건 자료 검색
+
+사용자는 사건과 관련된 질문을 입력하여 자료를 검색할 수 있습니다.  
+시스템은 벡터 DB에서 관련 문서를 검색한 뒤, 검색된 문서를 기반으로 답변을 생성합니다.
+
+예시 질문:
+
+text 엄대현 사건이 뭐야? 대현이가 왜 자살한 것처럼 보였어? 옥상 출입 기록 알려줘 백민지랑 왜 싸웠어? 
+
+---
+
+### 2. 용의자 심문 기능
+
+사용자는 사건 관련 인물들을 직접 심문할 수 있습니다.
+
+주요 인물:
+
+- 백민지
+- 고지성
+- 구태산
+
+용의자들의 진술을 비교하면서 인물 관계, 말의 모순, 사건 당일 행동을 추적할 수 있습니다.
+
+---
+
+### 3. 수사 단계별 단서 해금
+
+모든 사건 자료와 단서가 처음부터 공개되지 않고, 사용자의 조사 진행도에 따라 순차적으로 해금됩니다.
+
+예시 수사 단계:
+
+1. 사건 파악
+2. 자살설 검증
+3. 동행자 추적
+4. 진실 접근
+5. 범인 판단
+
+이를 통해 사용자가 자연스럽게 사건을 추리하도록 구성했습니다.
+
+---
+
+### 4. 스포일러 방지 응답
+
+아직 해금되지 않은 후반 단서를 사용자가 질문할 경우, 내용을 바로 공개하지 않습니다.  
+대신 현재 단계에서 어떤 자료를 먼저 확인해야 하는지 안내합니다.
+
+예시:
+
+text 사용자: 옥상 관리실 메모 알려줘  시스템: 현재 공개된 자료만으로는 해당 내용을 확인하기 어렵습니다. 먼저 옥상 출입 기록과 사건 당일 엄대현의 마지막 행동을 더 확인해야 합니다. 
+
+---
+
+### 5. 질문 의도 기반 검색
+
+사용자가 정확한 단서명이나 문서명을 입력하지 않아도, 질문의 의미를 분석해 관련 자료로 연결되도록 구성했습니다.
+
+예시:
+
+text "옥상 출입 기록 알려줘" "대현이가 옥상에 왜 올라갔어?" "옥상 문은 어떻게 열었어?" 
+
+위 질문들은 모두 옥상 출입 관련 자료와 연결될 수 있습니다.
+
+---
+
+### 6. 형사 메모 기능
+
+답변과 함께 형사 메모를 제공하여 사용자가 다음에 어떤 방향으로 조사해야 하는지 자연스럽게 알 수 있도록 했습니다.
+
+형사 메모는 정답을 직접 알려주기보다, 수사 방향을 간접적으로 안내하는 역할을 합니다.
+
+---
+
+### 7. Memory 기반 대화 흐름 유지
+
+사용자의 이전 질문, 확보한 단서, 심문 진행 상황을 바탕으로 대화 흐름을 유지합니다.  
+이를 통해 사용자는 매번 처음부터 설명하지 않아도 현재 수사 상황에 맞는 답변을 받을 수 있습니다.
+
+---
+
+## 프로젝트 구조
+
+text rag-detective-game/ ├── app.py ├── requirements.txt ├── README.md │ ├── data/ │   ├── case_docs/ │   ├── suspect_docs/ │   └── background_docs/ │ ├── vectorstore/ │   ├── faiss_index/ │   └── metadata/ │ ├── utils/ │   ├── rag.py │   ├── retriever.py │   ├── game_state.py │   ├── memory.py │   ├── intent_detector.py │   └── prompts.py │ ├── evaluation/ │   ├── evaluate_ragas.py │   ├── ragas_results.csv │   ├── ragas_summary.csv │   └── ragas_scores_bar.png │ └── assets/     └── images/ 
+
+> 실제 프로젝트 파일명과 폴더명에 따라 구조는 달라질 수 있습니다.
+
+---
+
+## 시스템 구조
+
+text 사용자 질문 입력         ↓ 질문 의도 분석         ↓ 현재 수사 단계 및 해금 문서 확인         ↓ Vector DB / FAISS 기반 문서 검색         ↓ RAG 답변 생성         ↓ 형사 메모 및 참고 문서 출력         ↓ 단서 획득 및 수사 단계 자동 진행 
+
+본 프로젝트는 단순히 전체 문서를 검색하는 방식이 아니라, 현재 수사 단계와 해금된 문서 상태를 함께 확인하여 답변을 생성합니다.  
+이를 통해 후반 단서가 초반에 노출되는 문제를 줄이고, 추리 게임의 흐름을 유지할 수 있도록 설계했습니다.
+
+---
+
+## 기술 스택
+
+| 구분 | 사용 기술 |
+|---|---|
+| Language | Python |
+| Web Framework | Streamlit |
+| RAG Framework | LangChain |
+| Vector DB | FAISS |
+| LLM | OpenAI API |
+| Embedding | OpenAI Embeddings |
+| Memory | LangChain Memory / Session State |
+| Evaluation | RAGAS |
+| Data Format | TXT, CSV, Markdown |
+| Deployment | Streamlit Community Cloud |
+| Version Control | GitHub |
+
+---
+
+## 설치 및 실행 방법
+
+### 1. Repository Clone
+
+bash git clone https://github.com/janghee1112/rag-detective-game.git cd rag-detective-game 
+
+---
+
+### 2. 가상환경 생성 및 실행
+
+bash python -m venv venv 
+
+Windows:
+
+bash venv\Scripts\activate 
+
+macOS / Linux:
+
+bash source venv/bin/activate 
+
+---
+
+### 3. 패키지 설치
+
+bash pip install -r requirements.txt 
+
+---
+
+### 4. 환경 변수 설정
+
+프로젝트 루트에 .env 파일을 생성하고 API Key를 입력합니다.
+
+env OPENAI_API_KEY=your_openai_api_key 
+
+Streamlit Cloud 배포 시에는 .env 파일을 업로드하지 않고, Streamlit Secrets 기능을 사용합니다.
+
+예시:
+
+toml OPENAI_API_KEY = "your_openai_api_key" 
+
+---
+
+### 5. Streamlit 실행
+
+bash streamlit run app.py 
+
+실행 후 브라우저에서 아래 주소로 접속합니다.
+
+text http://localhost:8501 
+
+---
+
+## RAGAS 평가 실행
+
+RAGAS 평가 코드는 evaluation/evaluate_ragas.py에서 실행할 수 있습니다.
+
+bash python evaluation/evaluate_ragas.py 
+
+평가 결과는 다음 파일로 저장됩니다.
+
+text evaluation/ragas_results.csv evaluation/ragas_summary.csv evaluation/ragas_scores_bar.png 
+
+---
+
+## RAGAS 평가 결과 요약
+
+본 프로젝트에서는 RAGAS를 이용해 RAG 답변 성능을 평가했습니다.
+
+주요 평가 지표는 다음과 같습니다.
+
+- Context Recall: 정답에 필요한 근거 문서가 검색 결과에 포함되었는지 평가
+- Faithfulness: 답변이 검색된 문서에 충실한지 평가
+- Context Precision: 검색된 문서가 질문과 관련성이 높은지 평가
+- Answer Relevancy: 답변이 사용자 질문에 직접적으로 대응하는지 평가
+
+평가 결과, Context Recall, Faithfulness, Context Precision은 높게 나타났습니다.  
+이는 필요한 근거 문서가 검색 결과에 잘 포함되었고, 답변도 문서 기반으로 생성되었음을 의미합니다.
+
+다만 Answer Relevancy는 상대적으로 낮게 측정되었습니다.  
+이는 추리 게임 특성상 정답을 바로 알려주기보다 스포일러를 방지하고 다음 수사 방향을 안내하는 답변이 포함되었기 때문입니다.
+
+---
+
+## 프로젝트 특징
+
+### 1. 추리 게임에 맞춘 RAG 구조
+
+일반적인 RAG 챗봇은 사용자의 질문에 대해 전체 문서를 검색해 답변합니다.  
+하지만 본 프로젝트는 추리 게임의 특성을 고려하여, 현재 수사 단계에서 확인 가능한 문서만 검색하도록 설계했습니다.
+
+---
+
+### 2. 문서 해금 기반 스포일러 방지
+
+후반 단서가 초반에 공개되지 않도록 문서 해금 조건을 적용했습니다.  
+이를 통해 사용자는 사건을 순서대로 추리할 수 있습니다.
+
+---
+
+### 3. 자료검색 삼중 구조
+
+자료검색 기능은 질문 목적에 따라 다음과 같이 나누어 설계했습니다.
+
+- 광범위 수사: 사건 전체 흐름과 초기 정황 파악
+- 집중 수사: 특정 인물, 단서, 진술 모순 확인
+- 배경 자료 검색: 날씨, 소문, 가방 내용물 등 몰입감 보강용 정보 제공
+
+핵심 단서와 배경 정보를 분리하여, 배경 자료가 수사 진행률이나 핵심 단서 해금에 직접 영향을 주지 않도록 구성했습니다.
+
+---
+
+### 4. 사용자 중심의 추리 경험
+
+시스템이 정답을 바로 알려주지 않고, 사용자가 자료를 찾고 인물을 심문하며 스스로 범인을 추론하도록 설계했습니다.  
+이를 통해 단순 질의응답보다 몰입감 있는 상호작용형 서비스를 제공합니다.
+
+---
+
+## 향후 개선 방향
+
+- UI 개선 및 수사 단계 시각화 강화
+- 형사 메모 힌트 기능 고도화
+- 답변 첫 문장의 질문 대응성 개선
+- 다양한 사건 시나리오 추가
+- RAGAS 평가 데이터셋 확장
+- 용의자 심문 대화 패턴 다양화
+- 배포 환경 안정화
+
+---
+
+예시:
+
+text https://rag-detective-game.streamlit.app 
+
+---
+
+## GitHub Repository
+
+text https://github.com/janghee1112/rag-detective-game 
+
+---
+
+## 라이선스
+
+본 프로젝트는 대학 수업 프로젝트 목적으로 제작되었습니다.
