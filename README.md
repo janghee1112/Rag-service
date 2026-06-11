@@ -173,8 +173,6 @@ RAG 답변 생성
 
 ### 1. Repository Clone
 
-bash git clone https://github.com/janghee1112/rag-detective-game.git cd rag-detective-game 
-
 ---
 
 ### 2. 가상환경 생성 및 실행
